@@ -1,19 +1,20 @@
-//   /api/auth
-
-const express = require("express");
-const dbConnection = require("./database/config");
-require('dotenv').config()
+const express = require('express');
+const cors = require('cors');
+const dbConnection = require('./database/config');
+require('dotenv').config();
 
 const app = express();
-app.use(express.json())
 //connect db
-dbConnection()
+dbConnection();
+//enable cors
+app.use(cors());
 
-app.use(express.static('public'))
+app.use(express.json());
+app.use(express.static('public'));
 //routes
-app.use('/api/auth', require('./routes/auth'))
+app.use('/api/auth', require('./routes/auth'));
 
-const port = process.env.PORT 
+const port = process.env.PORT;
 app.listen(port, () => {
-  console.log(`runingggg on port ${port}`);
+    console.log(`runingggg on port ${port}`);
 });
