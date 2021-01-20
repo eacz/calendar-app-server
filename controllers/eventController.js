@@ -23,8 +23,34 @@ const createEvents = async (req, res) => {
     }
 };
 
-const updateEvent = (req, res) => {
-    return res.json({ ok: true, msg: 'update event' });
+const updateEvent = async (req, res) => {
+    const eventID = req.params.id;
+    try {
+        const event = await Event.findById(eventID);
+        const uid = req.uid //user that is requesting's uid
+
+        if (!event) {
+            return res
+                .status(404)
+                .json({ ok: false, msg: "This event doesn't exists" });
+        }
+        if (event.user.toString() !== uid) {
+            return res.status(401).json({
+                ok: false,
+                msg: "You're not allowed to edit this event",
+            });
+        }
+
+        const newEvent = {...req.body, user: uid}
+
+        const updatedEvent = await Event.findByIdAndUpdate(eventID, newEvent, {new: true});
+
+        res.json({ok:true, event: updatedEvent})
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ ok: false, msg: 'Error' });
+    }
 };
 
 const deleteEvent = (req, res) => {
