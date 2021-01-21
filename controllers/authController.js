@@ -62,7 +62,7 @@ const revalidateUser = async (req, res) => {
     const { uid, name } = req;
     try {
         const token = await generateJWT(uid, name);
-        res.json({ ok: true, token });
+        res.json({ ok: true, token, uid, name });
     } catch (error) {
         console.log(error);
         res.status(500).json({ ok: false, msg: "Can't generate the token" });
